@@ -1,8 +1,9 @@
+import { table } from 'console'
 import sqlite3 from 'sqlite3'
 
-const DBSOURCE = 'db.sqlite'
+const DBSOURCE = 'treinow-db.sqlite'
 
-const SQL_USER_CREATE = `
+const usuarios = `
     CREATE TABLE usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
@@ -12,7 +13,7 @@ const SQL_USER_CREATE = `
         password TEXT
     );`
 
-const SQL_ALUNO_CREATE = `
+const alunos = `
     CREATE TABLE alunos (
         id INT PRIMARY KEY,
         user_id INT,
@@ -21,14 +22,14 @@ const SQL_ALUNO_CREATE = `
         FOREIGN KEY (personal_id) REFERENCES personais(id)
       );`
 
-const SQL_PERSONAL_CREATE = `
+const personais = `
     CREATE TABLE personais (
         id INT PRIMARY KEY,
         user_id INT,
         FOREIGN KEY (user_id) REFERENCES usuarios(id)
       );`
 
-const SQL_TREINO_CREATE = `
+const treinos = `
     CREATE TABLE treinos (
         id INTEGER PRIMARY KEY,
         duration TEXT,
@@ -38,7 +39,7 @@ const SQL_TREINO_CREATE = `
         FOREIGN KEY(id_personal) REFERENCES personais(id)
       );`
 
-const SQL_ALUNO_TREINO_CREATE = `
+const horarios_treino = `
     CREATE TABLE horarios_treino (
         id INTEGER PRIMARY KEY,
         id_aluno INTEGER,
@@ -48,7 +49,7 @@ const SQL_ALUNO_TREINO_CREATE = `
         FOREIGN KEY(id_treino) REFERENCES treinos(id)
       );`
 
-const SQL_AVALICAO_PERSONAL_CREATE = `
+const avaliacao_personal = `
     CREATE TABLE avaliacao_personal (
         id INTEGER PRIMARY KEY,
         id_personal INTEGER,
@@ -56,21 +57,24 @@ const SQL_AVALICAO_PERSONAL_CREATE = `
         FOREIGN KEY(id_personal) REFERENCES personais(id)
       );`
 
-const SQL_TABLES_CREATE = SQL_USER_CREATE + SQL_ALUNO_CREATE + SQL_PERSONAL_CREATE + SQL_TREINO_CREATE + SQL_ALUNO_TREINO_CREATE + SQL_AVALICAO_PERSONAL_CREATE;
+const tablesArray: string[] = [usuarios, alunos, personais, treinos, horarios_treino, avaliacao_personal];
 
 const database = new sqlite3.Database(DBSOURCE, (err) => {
     if (err) {
         console.error(err.message);
         throw err
     } else {
-        console.log('Base de dados conectada com sucesso.')
-        database.run(SQL_TABLES_CREATE, (err) => {
-            if (err) {
-                // Possivelmente a tabela já foi criada
-            } else {
-                console.log('Tabela itens criada com sucesso.')
-            }
-        })
+        console.log('Base de dados conectada com sucesso.');
+        tablesArray.forEach(table => {
+            database.run(table, (err) => {
+                if (err) {
+                    console.log(err);
+                    // Possivelmente a tabela já foi criada
+                } else {
+                    console.log(`Tabela ${table} criada com sucesso.`)
+                }
+            })
+        });
     }
 })
 
