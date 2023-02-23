@@ -57,7 +57,13 @@ const avaliacao_personal = `
         FOREIGN KEY(id_personal) REFERENCES personais(id)
       );`
 
-const tablesArray: string[] = [usuarios, alunos, personais, treinos, horarios_treino, avaliacao_personal];
+const mapQueries = new Map<string, string>([
+    ["usuarios", usuarios],
+    ["personais", personais],
+    ["treinos", treinos],
+    ["horarios_treino", horarios_treino],
+    ["avaliacao_personal", avaliacao_personal]
+]);
 
 const database = new sqlite3.Database(DBSOURCE, (err) => {
     if (err) {
@@ -65,15 +71,22 @@ const database = new sqlite3.Database(DBSOURCE, (err) => {
         throw err
     } else {
         console.log('Base de dados conectada com sucesso.');
-        tablesArray.forEach(table => {
-            database.run(table, (err) => {
+        mapQueries.forEach((element, key) => {
+            database.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='${key}'`, (err, row) => {
                 if (err) {
-                    console.log(err);
-                    // Possivelmente a tabela já foi criada
+                    console.log(err.message);
+                } else if (row) {
+
                 } else {
-                    console.log(`Tabela ${table} criada com sucesso.`)
+                    database.run(element, (err) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(`Tabela ${key} criada com sucesso.`)
+                        }
+                    })
                 }
-            })
+            });
         });
     }
 })

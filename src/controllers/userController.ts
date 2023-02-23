@@ -1,23 +1,50 @@
 import { Request, Response } from "express";
 import { User } from "../models/User";
 import UserRepository from "../services/sqlite/user-repository";
+import { checkIfExists, checkUserFields } from "../services/userServices";
 
 export const pong = (req: Request, res: Response) => {
     res.json({ pong: true });
 }
 
-export const registerUser = async (req: Request, res: Response) => {
-    const obj: User = { name: "Daniel", email: "saddas", document: "123", type: true, password: "123abc" }
+export const registerUser = (req: Request, res: Response) => {
+    const obj: User = { name: req.body.name, email: req.body.email, document: req.body.document, type: req.body.type, password: req.body.password };
 
     try {
-        UserRepository.criar(obj, (id) => {
-            if (id) {
-                res.status(201).location(`/users/${id}`).send();
-            } else {
-                console.log("caiu aqui");
-                res.status(400).send()
-            }
-        })
+        if (obj) {
+            checkUserFields(obj, (field) => {
+                if (typeof field === "string") {
+                    res.send(`Campo ${field} inválido!`);
+                }
+                else if(typeof field === "boolean"){
+                    UserRepository.criar(obj, (id) => {
+                        if (id && id > 0) {
+                            res.status(201).location(`/users/${id}`).send("Usuario criado com sucesso!");
+                        }
+                        else if (id && id < 0) {
+                            res.send("Usuário já existente!");
+                        }
+                        else {
+                            res.status(400).send()
+                        }
+                    })
+                }
+            });
+        }
+    } catch (error: any) {
+        //res.status(error.response.status)
+        return res.send(error.message);
+    }
+}
+
+export const logUser = (req: Request, res: Response) => {
+    const login: {email: string, password: string} = {email: req.body.email, password: req.body.password};
+    try {
+        if(login){
+            UserRepository.logar(login, (row) =>{
+                console.log(row);
+            })
+        }
     } catch (error: any) {
         //res.status(error.response.status)
         return res.send(error.message);

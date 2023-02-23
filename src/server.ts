@@ -6,7 +6,7 @@ import userRoutes from "./routes/userRoutes";
 dotenv.config();
 const server = express();
 server.use(cors());
-
+server.use(express.urlencoded({extended: true}));
 server.use("/api", userRoutes);
 
 server.listen(process.env.PORT);
