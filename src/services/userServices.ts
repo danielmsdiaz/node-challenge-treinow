@@ -16,34 +16,46 @@ export const checkIfExists = (user: User, cb: (row?: string) => void) => {
 }
 
 export const checkLoginCredentials = (user: User, cb: (row?: string) => void) => {
-    database.get("SELECT * FROM usuarios WHERE email = ? AND password = ?", [user.email , user.password], (err, row) => {
+    database.get("SELECT * FROM usuarios WHERE email = ? AND password = ?", [user.email, user.password], (err, row) => {
         if (err) {
             console.error(err.message);
         } else if (!row) {
             cb(row);
             console.log('Não existe registro com o valor informado.');
         } else {
-            cb(row);
+            cb(row.id);
             console.log('Existe um registro com o valor informado:', row);
         }
     });
 }
 
-export const checkUserFields = (user:User, cb: (row?: string | boolean) => void) =>{
+export const checkUserFields = (user: User, cb: (row?: string | boolean) => void) => {
     const arrValues = Object.entries(user);
     let tempArr: string[] = [];
 
     arrValues.forEach(element => {
-        if(!element[0] || !element[1]){
+        if (!element[0] || !element[1]) {
             tempArr.push(element[0]);
             return;
         }
     });
 
-    if(tempArr.length == 0){
+    if (tempArr.length == 0) {
         cb(true);
     }
-    else{
+    else {
         cb(tempArr[0]);
     }
+}
+
+export const checkUserType = (id: string, cb: (row?: string | boolean) => void) => {
+    database.get("SELECT type FROM usuarios WHERE id = ?", parseInt(id), (err, row) => {
+        if (err) {
+            console.error(err.message);
+        } else if (!row) {
+            console.log('Não existe registro com o valor informado.');
+        } else {
+            cb(row.type);
+        }
+    });
 }

@@ -1,7 +1,13 @@
 import { Request, Response } from "express";
 import { User } from "../models/User";
 import UserRepository from "../services/sqlite/user-repository";
-import { checkIfExists, checkUserFields } from "../services/userServices";
+import { checkIfExists, checkUserFields, checkUserType } from "../services/userServices";
+import JWT from "jsonwebtoken";
+import dotenv from "dotenv";
+import server from "../server"
+
+
+dotenv.config();
 
 export const pong = (req: Request, res: Response) => {
     res.json({ pong: true });
@@ -16,7 +22,7 @@ export const registerUser = (req: Request, res: Response) => {
                 if (typeof field === "string") {
                     res.send(`Campo ${field} inválido!`);
                 }
-                else if(typeof field === "boolean"){
+                else if (typeof field === "boolean") {
                     UserRepository.criar(obj, (id) => {
                         if (id && id > 0) {
                             res.status(201).location(`/users/${id}`).send("Usuario criado com sucesso!");
@@ -25,7 +31,7 @@ export const registerUser = (req: Request, res: Response) => {
                             res.send("Usuário já existente!");
                         }
                         else {
-                            res.status(400).send()
+                            res.status(400).send("Ocorreu algum erro!")
                         }
                     })
                 }
@@ -38,11 +44,26 @@ export const registerUser = (req: Request, res: Response) => {
 }
 
 export const logUser = (req: Request, res: Response) => {
-    const login: {email: string, password: string} = {email: req.body.email, password: req.body.password};
+    const login: { email: string, password: string } = { email: req.body.email, password: req.body.password };
     try {
-        if(login){
-            UserRepository.logar(login, (row) =>{
-                console.log(row);
+        if (login) {
+            UserRepository.logar(login, (id) => {
+                if (id) {
+                    checkUserType(id, (type) => {
+                        if(type){
+                            const token = JWT.sign(
+                                { id: id, email: login.email, password: login.password, type: type},
+                                process.env.JWT_SECRET_KEY as string,
+                                { expiresIn: "2h" });
+                            
+                            server.locals.token = `Bearer ${token}`;
+                            res.json({status: "Login realizado com sucesso!", token})
+                        }
+                    });
+                }
+                else {
+                    res.send("Usuário ou senha incorreto!");
+                }
             })
         }
     } catch (error: any) {

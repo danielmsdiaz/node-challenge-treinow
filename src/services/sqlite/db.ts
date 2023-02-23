@@ -59,6 +59,7 @@ const avaliacao_personal = `
 
 const mapQueries = new Map<string, string>([
     ["usuarios", usuarios],
+    ["alunos", alunos],
     ["personais", personais],
     ["treinos", treinos],
     ["horarios_treino", horarios_treino],
@@ -88,6 +89,34 @@ const database = new sqlite3.Database(DBSOURCE, (err) => {
                 }
             });
         });
+
+        try {
+            const nomeDoTrigger = 'inserir_usuario';
+            const sql = `SELECT name FROM sqlite_master WHERE type='trigger' AND name='${nomeDoTrigger}'`;
+
+            database.get(sql, (err, row) => {
+                if (err) {
+                    throw err;
+                }
+                if (row) {
+                    console.log(`O trigger ${nomeDoTrigger} existe no banco de dados.`);
+                } else {
+                    console.log(`O trigger ${nomeDoTrigger} não existe no banco de dados.`);
+                    database.run(`CREATE TRIGGER inserir_usuario AFTER INSERT ON usuarios
+                                        BEGIN
+                                            INSERT INTO alunos (user_id)
+                                            SELECT id FROM usuarios WHERE type = '0' AND id = NEW.id;
+    
+                                            INSERT INTO personais (user_id)
+                                            SELECT id FROM usuarios WHERE type = '1' AND id = NEW.id;
+                                        END;`);
+                }
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
+
     }
 })
 
