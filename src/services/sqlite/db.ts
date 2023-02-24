@@ -18,7 +18,7 @@ const alunos = `
         id INT PRIMARY KEY,
         user_id INT,
         personal_id INT,
-        FOREIGN KEY (user_id) REFERENCES usuarios(id),
+        FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE,
         FOREIGN KEY (personal_id) REFERENCES personais(id)
       );`
 
@@ -39,6 +39,15 @@ const treinos = `
         FOREIGN KEY(id_personal) REFERENCES personais(id)
       );`
 
+const personais_alunos = `
+    CREATE TABLE personais_alunos (
+        id INTEGER PRIMARY KEY,
+        id_personal INTEGER,
+        id_aluno INTEGER,
+        FOREIGN KEY(id_personal) REFERENCES personais(id)
+        FOREIGN KEY(id_aluno) REFERENCES alunos(id)
+      );`
+
 const horarios_treino = `
     CREATE TABLE horarios_treino (
         id INTEGER PRIMARY KEY,
@@ -53,8 +62,10 @@ const avaliacao_personal = `
     CREATE TABLE avaliacao_personal (
         id INTEGER PRIMARY KEY,
         id_personal INTEGER,
+        id_aluno INTEGER,
         nota TEXT,
         FOREIGN KEY(id_personal) REFERENCES personais(id)
+        FOREIGN KEY(id_aluno) REFERENCES alunos(id)
       );`
 
 const mapQueries = new Map<string, string>([
@@ -63,7 +74,8 @@ const mapQueries = new Map<string, string>([
     ["personais", personais],
     ["treinos", treinos],
     ["horarios_treino", horarios_treino],
-    ["avaliacao_personal", avaliacao_personal]
+    ["avaliacao_personal", avaliacao_personal],
+    ["personais_alunos", personais_alunos]
 ]);
 
 const database = new sqlite3.Database(DBSOURCE, (err) => {

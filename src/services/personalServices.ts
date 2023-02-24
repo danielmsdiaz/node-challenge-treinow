@@ -16,5 +16,14 @@ export const checkAlunoPersonal = (aluno: Aluno, cb: (row?: string) => void) => 
     });
 }
 
+export const linkAlunoToPersonal = (aluno: Aluno, cb: (row?: any) => void) => {
+        const sql = 'INSERT INTO personais_alunos (id_personal, id_aluno) VALUES (?, ?)';
+        const params = [aluno.personal_id, aluno.user_id];
+
+        database.run(sql, params, function (_err) {
+            cb(this)
+        });
+}
+
 
 

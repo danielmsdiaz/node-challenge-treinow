@@ -6,7 +6,8 @@ import AlunoRepository from "../services/sqlite/aluno-repository";
 export const registerAluno = (req: Request, res: Response) => {  
 }
 
-export const listMyTrainings = (req: Request, res: Response) => {
+export const deleteAccount = (req: Request, res: Response) => {
+    const loggedAluno = res.locals.id;
 }
 
 

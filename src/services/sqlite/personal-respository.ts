@@ -14,6 +14,7 @@ const PersonalRepository = {
     vincularAlunoPersonal: (aluno: Aluno, callback: (res?: number) => void) => {
         const sql = 'UPDATE alunos SET personal_id = ? WHERE user_id = ?';
         const params = [aluno.personal_id, aluno.user_id];
+
         database.run(sql, params, function (_err) {
             callback(this?.changes)
         });
