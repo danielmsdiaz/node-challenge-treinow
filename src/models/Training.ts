@@ -3,4 +3,5 @@ export interface Training {
     duration: string;
     muscle: string;
     date: Date;
+    id_personal: number;
 }

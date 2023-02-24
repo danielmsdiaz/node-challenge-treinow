@@ -18,6 +18,7 @@ export const Auth = {
                     if(decoded){
                         if (decoded instanceof Object && 'type' in decoded) {
                             if(decoded.type == 1){
+                                res.locals.id = decoded.id; 
                                 sucess = true;
                             }
                           }
@@ -27,6 +28,10 @@ export const Auth = {
 
                 }
             }
+        }
+        else{
+            res.json({ERROR: "User não logado!"});
+            return;
         }
 
         if(sucess){
