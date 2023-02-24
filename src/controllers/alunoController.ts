@@ -24,8 +24,8 @@ export const ratePersonal = (req: Request, res: Response) => {
             checkIfHasPersonal(loggedAluno, (id) => {
                 if(id){
                     if(id == idPersonal){
-                        AlunoRepository.avaliar(rate, idPersonal, (result) => {
-                            res.json({Avaliação: `Nota ${rate} atribuida ao personal de ID: ${idPersonal}`});
+                        AlunoRepository.avaliar(loggedAluno, rate, idPersonal, (msg) => {
+                            res.json({Avaliação: `Nota ${rate} ${msg} ao personal de ID: ${idPersonal}`});
                         });
                     }
                     else{
