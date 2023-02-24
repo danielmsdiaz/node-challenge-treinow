@@ -30,5 +30,14 @@ export const registerAluno = (req: Request, res: Response) => {
     });
 }
 
+export const listMyTrainings = (req: Request, res: Response) => {
+    const authPersonal = res.locals.id;
+    PersonalRepository.meusTreinos(authPersonal, (treinos) => {
+        if(treinos){
+            res.status(200).send(treinos);
+        }
+    });
+}
+
 
 

@@ -2,7 +2,7 @@ import { User } from "../models/User";
 import database from "./sqlite/db";
 
 export const checkIfExists = (user: User, cb: (row?: string) => void) => {
-    database.get("SELECT * FROM usuarios WHERE document = ?", user.document, (err, row) => {
+    database.get("SELECT * FROM usuarios WHERE document = ? OR email = ?", [user.document, user.email], (err, row) => {
         if (err) {
             console.error(err.message);
         } else if (!row) {

@@ -10,12 +10,23 @@ const PersonalRepository = {
             callback(this?.lastID)
         });
     },
-    
+
     vincularAlunoPersonal: (aluno: Aluno, callback: (res?: number) => void) => {
         const sql = 'UPDATE alunos SET personal_id = ? WHERE user_id = ?';
         const params = [aluno.personal_id, aluno.user_id];
         database.run(sql, params, function (_err) {
             callback(this?.changes)
+        });
+    },
+
+    meusTreinos: (id: number, callback: (row?: string[]) => void) => {
+        database.all("SELECT * FROM treinos WHERE id_personal = ?", [id], (err, row) => {
+            if (err) {
+                console.error(err.message);
+            }
+            else {
+                callback(row);
+            }
         });
     }
 }

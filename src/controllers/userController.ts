@@ -28,7 +28,7 @@ export const registerUser = (req: Request, res: Response) => {
                             res.status(201).location(`/users/${id}`).send("Usuario criado com sucesso!");
                         }
                         else if (id && id < 0) {
-                            res.send("Usuário já existente!");
+                            res.send("Email ou CPF já existente!");
                         }
                         else {
                             res.status(400).send("Ocorreu algum erro!")
