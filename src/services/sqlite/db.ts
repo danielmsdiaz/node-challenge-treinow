@@ -54,6 +54,7 @@ const horarios_treino = `
         id_aluno INTEGER,
         id_treino INTEGER,
         horario TEXT,
+        date DATE,
         FOREIGN KEY(id_aluno) REFERENCES alunos(id)
         FOREIGN KEY(id_treino) REFERENCES treinos(id)
       );`
@@ -80,6 +81,7 @@ const mapQueries = new Map<string, string>([
 
 const database = new sqlite3.Database(DBSOURCE, (err) => {
     if (err) {
+        console.log("caiu aqui");
         console.error(err.message);
         throw err
     } else {
@@ -87,6 +89,7 @@ const database = new sqlite3.Database(DBSOURCE, (err) => {
         mapQueries.forEach((element, key) => {
             database.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='${key}'`, (err, row) => {
                 if (err) {
+                    console.log("aqui");
                     console.log(err.message);
                 } else if (row) {
 
