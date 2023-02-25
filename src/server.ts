@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import dotenv from "dotenv"
 import cors from "cors";
 import userRoutes from "./routes/userRoutes";
@@ -12,6 +12,7 @@ server.locals.token = "";
 
 server.use(cors());
 server.use(express.urlencoded({extended: true}));
+server.use(json());
 
 server.use("/api", userRoutes, personalRoutes, alunoRoutes);
 
