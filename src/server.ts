@@ -7,7 +7,7 @@ import alunoRoutes from "./routes/alunoRoutes";
 
 dotenv.config();
 const server = express();
-//gambiarra para funcionar a aplicação
+
 server.locals.token = "";
 
 server.use(cors());
