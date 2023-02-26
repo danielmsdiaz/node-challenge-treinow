@@ -5,18 +5,17 @@
 
 ### Após instalar os pré-requisitos
 `npm install`
-
-### Comando para rodar o projeto
-`npm run start-dev`
-
 ### Gerenciador de BDD
 `Pressione CTRL + P, cole esse código => ext install qwtel.sqlite-viewer e pressione ENTER`
-
+### Comando para rodar o projeto
+`npm run start-dev`
 ### PORTA
 `a porta do servidor está no arquivo .env, caso haja conflito, pode mudar lá o PORT, está configurado na 3201`
 
 ### Collections com os endpoints
 `https://www.postman.com/security-cosmologist-49346345/workspace/treinow/collection/13848887-08ecf366-8f4a-4480-8255-f5f85429d15f?action=share&creator=13848887`
+
+Obs: caso for usar o POSTMAN ou Insomnia, não use a versão web.
 
 ### Caso o collections com os endpoins não funcione:
 ### Endpoints User -

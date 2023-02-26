@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../models/User";
 import UserRepository from "../services/sqlite/user-repository";
-import { checkIfExists, checkUserFields, checkUserType } from "../services/userServices";
+import { checkIfExists, checkUserFields, checkUserType, validateBody } from "../services/userServices";
 import JWT from "jsonwebtoken";
 import dotenv from "dotenv";
 import server from "../server"
@@ -20,19 +20,27 @@ export const registerUser = (req: Request, res: Response) => {
         if (obj) {
             checkUserFields(obj, (field) => {
                 if (typeof field === "string") {
-                    res.send(`Campo ${field} inválido!`);
+                    res.send(`Campo ${field} undefined!`);
                 }
                 else if (typeof field === "boolean") {
-                    UserRepository.criar(obj, (id) => {
-                        if (id && id > 0) {
-                            res.status(201).location(`/users/${id}`).send("Usuario criado com sucesso!");
-                        }
-                        else if (id && id < 0) {
-                            res.send("Email ou CPF já existente!");
+                    validateBody(obj, (arr) => {
+                        if (arr && arr.length) {
+                            res.json({ ERROR: arr })
                         }
                         else {
-                            res.status(400).send("Ocorreu algum erro!")
+                            UserRepository.criar(obj, (id) => {
+                                if (id && id > 0) {
+                                    res.status(201).location(`/users/${id}`).send("Usuario criado com sucesso!");
+                                }
+                                else if (id && id < 0) {
+                                    res.send("Email ou CPF já existente!");
+                                }
+                                else {
+                                    res.status(400).send("Ocorreu algum erro!")
+                                }
+                            })
                         }
+
                     })
                 }
             });
@@ -50,14 +58,14 @@ export const logUser = (req: Request, res: Response) => {
             UserRepository.logar(login, (id) => {
                 if (id) {
                     checkUserType(id, (type) => {
-                        if(type){
+                        if (type) {
                             const token = JWT.sign(
-                                { id: id, email: login.email, password: login.password, type: type},
+                                { id: id, email: login.email, password: login.password, type: type },
                                 process.env.JWT_SECRET_KEY as string,
                                 { expiresIn: "2h" });
-                            
+
                             server.locals.token = `Bearer ${token}`;
-                            res.json({status: "Login realizado com sucesso!", token})
+                            res.json({ status: "Login realizado com sucesso!", token })
                         }
                     });
                 }

@@ -14,6 +14,25 @@ export const checkIfHasPersonal = (loggedAluno: number, cb: (row?: number) => vo
     });
 }
 
+export const checkIfItsAPersonal = (idPersonal: number, cb: (row?: number) => void) => {
+    database.get("SELECT type FROM usuarios WHERE id = ?", [idPersonal], (err, row) => {
+        if (err) {
+            console.log(err);
+        }
+        else if (!row) {
+            cb(row)
+        }
+        else {
+            if(row.type){
+                cb(row.type);
+            }
+            else{
+                cb(row);
+            }
+        }
+    });
+}
+
 export const checkIfHasAlreadyRated = (loggedAluno: number, cb: (row?: any) => void) => {
     database.get("SELECT * FROM avaliacao_personal WHERE id_aluno = ?", [loggedAluno], (err, row) => {
         if (err) {
@@ -41,7 +60,7 @@ export const checkMyPersonal = (loggedAluno: number, cb: (row?: any) => void) =>
             });
         }
         else {
-            cb(rowAluno?.personal_id);
+            cb(rowAluno.personal_id);
         }
     });
 }
@@ -60,10 +79,10 @@ export const checkIfMyPersonalHasATraining = (idPersonal: number, cb: (row?: any
 export const checkAllAlunoInteractions = (idAluno: number, cb: (row?: any) => void) => {
 
     deleteRows("user_id", idAluno, "alunos", (result) => {
-        if(result){
+        if (result) {
             console.log(result);
         }
-        else{
+        else {
             console.log(`Aluno deletado!`);
         }
     })
@@ -76,15 +95,15 @@ export const checkAllAlunoInteractions = (idAluno: number, cb: (row?: any) => vo
             if (Array.isArray(row) && row.length) {
                 row.forEach(treino => {
                     deleteRows("id", treino.id, "horarios_treino", (result) => {
-                        if(result){
+                        if (result) {
                             console.log(result);
                         }
-                        else{
+                        else {
                             console.log(`Treino ${treino.id} deletado!`);
                         }
                     })
                 });
-                
+
             }
             else {
                 console.log("Aluno não possui treinos cadastrados");
@@ -99,10 +118,10 @@ export const checkAllAlunoInteractions = (idAluno: number, cb: (row?: any) => vo
         else {
             if (row) {
                 deleteRows("id", row.id, "avaliacao_personal", (result) => {
-                    if(result){
+                    if (result) {
                         console.log(result);
                     }
-                    else{
+                    else {
                         console.log("Avaliacão deletada!");
                     }
                 });
@@ -120,10 +139,10 @@ export const checkAllAlunoInteractions = (idAluno: number, cb: (row?: any) => vo
         else {
             if (row) {
                 deleteRows("id", row.id, "personais_alunos", (result) => {
-                    if(result){
+                    if (result) {
                         console.log(result);
                     }
-                    else{
+                    else {
                         console.log("Contrato deletado!");
                     }
                 });

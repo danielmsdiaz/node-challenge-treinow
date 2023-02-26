@@ -24,27 +24,29 @@ const AlunoRepository = {
 
     registerMyTraining: (aluno: number, training: { date: Date, horario: string, treino: number }, callback: (msg: string | RunResult) => void) => {
         checkMyPersonal(aluno, (res) => {
-            if (null) {
-                callback("Esse aluno não pode registrar um treino sem personal!");
-            }
-            else if (Array.isArray(res)) {
-                if (!res.length) {
-                    callback("O personal desse aluno não possui nenhum treino cadastrado!");
+            if (res !== undefined) {
+                if (res === null) {
+                    callback("Esse aluno não pode registrar um treino sem personal!");
                 }
-                else {
-                    res.forEach(treino => {
-                        if (treino.id == training.treino) {
-                            const sql = 'INSERT INTO horarios_treino (id_aluno, id_treino, horario, date) VALUES (?, ?, ?, ?)';
-                            const params = [aluno, training.treino, training.horario, training.date];
-                            database.run(sql, params, function (_err) {
-                                callback(this);
-                                return;
-                            });
-                        }
-                        else {
-                            callback("Esse treino não pertence ao seu personal!");
-                        }
-                    });
+                else if (Array.isArray(res)) {
+                    if (!res.length) {
+                        callback("O personal desse aluno não possui nenhum treino cadastrado!");
+                    }
+                    else {
+                        res.forEach(treino => {
+                            if (treino.id == training.treino) {
+                                const sql = 'INSERT INTO horarios_treino (id_aluno, id_treino, horario, date) VALUES (?, ?, ?, ?)';
+                                const params = [aluno, training.treino, training.horario, training.date];
+                                database.run(sql, params, function (_err) {
+                                    callback(this);
+                                    return;
+                                });
+                            }
+                            else {
+                                callback("Esse treino não pertence ao seu personal!");
+                            }
+                        });
+                    }
                 }
             }
         });

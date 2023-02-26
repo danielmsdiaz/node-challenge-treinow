@@ -3,6 +3,6 @@ export interface User {
     name: string;
     email: string;
     document: string;
-    type: boolean;
+    type: string;
     password: string;
 }

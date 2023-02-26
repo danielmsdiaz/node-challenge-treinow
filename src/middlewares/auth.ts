@@ -17,7 +17,7 @@ export const Auth = {
                     const decoded = JWT.verify(token, process.env.JWT_SECRET_KEY as string);
                     if(decoded){
                         if (decoded instanceof Object && 'type' in decoded) {
-                            if(decoded.type == 1){
+                            if(decoded.type == "1"){
                                 res.locals.id = decoded.id; 
                                 sucess = true;
                             }
@@ -38,7 +38,7 @@ export const Auth = {
             next();
         }
         else{
-           res.status(401).send("Erro na autenticação!") 
+           res.status(401).json({ERROR: "Apenas personais tem acesso a esse endpoint!"});
         }
     },
 
@@ -53,7 +53,7 @@ export const Auth = {
                     const decoded = JWT.verify(token, process.env.JWT_SECRET_KEY as string);
                     if(decoded){
                         if (decoded instanceof Object && 'type' in decoded) {
-                            if(decoded.type == 0){
+                            if(decoded.type == "0"){
                                 res.locals.id = decoded.id; 
                                 sucess = true;
                             }
@@ -74,7 +74,7 @@ export const Auth = {
             next();
         }
         else{
-           res.status(401).send("Erro na autenticação!") 
+           res.status(401).json({ERROR: "Apenas alunos tem acesso a esse endpoint!"}); 
         }
     }
 

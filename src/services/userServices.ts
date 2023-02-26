@@ -29,7 +29,26 @@ export const checkLoginCredentials = (user: User, cb: (row?: string) => void) =>
     });
 }
 
-export const checkUserFields = (user: User, cb: (row?: string | boolean) => void) => {
+export const validateBody = (user: User, cb: (arr?: string[]) => void) => {
+    const arrValues = Object.entries(user);
+    const arrTemp: string[] = [];
+
+    arrValues.forEach(element => {
+        if (element[0] == "name" && element[1].length < 2) {
+            arrTemp.push(`${element[0]} com menos de 2 caracteres`);
+        }
+        else if (element[0] == "type" && (element[1] !== "0" && element[1] !== "1")) {
+            arrTemp.push(`${element[0]} diferente de 1 ou 0`);
+        }
+        else if (element[0] == "password" && element[1].length < 6) {
+            arrTemp.push(`${element[0]} com menos de 6 caracteres`);
+        }
+    });
+
+    cb(arrTemp);
+}
+
+export const checkUserFields = (user: User, cb: (row?: string | boolean | string[]) => void) => {
     const arrValues = Object.entries(user);
     let tempArr: string[] = [];
 
@@ -65,10 +84,10 @@ export const closeAccount = (id: string, cb: (row?: any) => void) => {
     const params = [id];
 
     database.run(sql, params, function (_err) {
-        if(_err){
+        if (_err) {
             cb(_err)
         }
-        else{
+        else {
             cb(true);
         }
     });
