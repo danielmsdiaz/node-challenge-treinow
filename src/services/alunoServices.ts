@@ -132,26 +132,26 @@ export const checkAllAlunoInteractions = (idAluno: number, cb: (row?: any) => vo
         }
     });
 
-    database.get("SELECT * FROM personais_alunos WHERE id_aluno = ?", [idAluno], (err, row) => {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            if (row) {
-                deleteRows("id", row.id, "personais_alunos", (result) => {
-                    if (result) {
-                        console.log(result);
-                    }
-                    else {
-                        console.log("Contrato deletado!");
-                    }
-                });
-            }
-            else {
-                console.log("Aluno não possui personais");
-            }
-        }
-    });
+    // database.get("SELECT * FROM personais_alunos WHERE id_aluno = ?", [idAluno], (err, row) => {
+    //     if (err) {
+    //         console.log(err);
+    //     }
+    //     else {
+    //         if (row) {
+    //             deleteRows("id", row.id, "personais_alunos", (result) => {
+    //                 if (result) {
+    //                     console.log(result);
+    //                 }
+    //                 else {
+    //                     console.log("Contrato deletado!");
+    //                 }
+    //             });
+    //         }
+    //         else {
+    //             console.log("Aluno não possui personais");
+    //         }
+    //     }
+    // });
 
     cb();
 }

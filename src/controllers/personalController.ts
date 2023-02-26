@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Aluno } from "../models/Aluno";
 import { Training } from "../models/Training";
-import { checkAlunoPersonal, linkAlunoToPersonal } from "../services/personalServices";
+import { checkAlunoPersonal} from "../services/personalServices";
 import PersonalRepository from "../services/sqlite/personal-respository";
 
 export const registerTraining = (req: Request, res: Response) => {
@@ -17,11 +17,12 @@ export const registerAluno = (req: Request, res: Response) => {
         if (!personal) {
             PersonalRepository.vincularAlunoPersonal(aluno, (update) => {
                 if (update && update > 0) {
-                    linkAlunoToPersonal(aluno, (result) => {
-                        if(result){
-                            res.status(200).send("Contrato com o personal realizado com sucesso!");
-                        }
-                    });
+                    res.status(200).json({Sucesso: "Contrato com o personal realizado com sucesso!"});
+                    // linkAlunoToPersonal(aluno, (result) => {
+                    //     if(result){
+                            
+                    //     }
+                    // });
                 }
                 else {
                     res.status(400).json({ ERROR: "Não foi possível realizar o contrato com o personal!" })
