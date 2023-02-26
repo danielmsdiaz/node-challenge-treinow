@@ -1,5 +1,7 @@
 import { User } from "../models/User";
 import database from "./sqlite/db";
+import * as EmailValidator from 'email-validator';
+import * as Validator from "../utils/validator";
 
 export const checkIfExists = (user: User, cb: (row?: string) => void) => {
     database.get("SELECT * FROM usuarios WHERE document = ? OR email = ?", [user.document, user.email], (err, row) => {
@@ -34,17 +36,23 @@ export const validateBody = (user: User, cb: (arr?: string[]) => void) => {
     const arrTemp: string[] = [];
 
     arrValues.forEach(element => {
-        if (element[0] == "name" && element[1].length < 2) {
-            arrTemp.push(`${element[0]} com menos de 2 caracteres`);
+        if (element[0] == "name" && !Validator.isValidFirstname(element[1])) {
+            arrTemp.push(`${element[0]} inváldo, deve ter no mínimo 3 carateres, sem números, nem caracteres especiais`);
+        }
+        else if (element[0] == "email" && !EmailValidator.validate(element[1])) {
+            arrTemp.push(`${element[0]} inválido, formato desejado: xxxx@xxxx.com`);
+        }
+        else if (element[0] == "document" && !Validator.isValidDocument(element[1])) {
+            arrTemp.push(`${element[0]} inválido, deve ter 11 caracteres!`);
         }
         else if (element[0] == "type" && (element[1] !== "0" && element[1] !== "1")) {
             arrTemp.push(`${element[0]} diferente de 1 ou 0`);
         }
-        else if (element[0] == "password" && element[1].length < 6) {
-            arrTemp.push(`${element[0]} com menos de 6 caracteres`);
+        else if (element[0] == "password" && !Validator.isValidPassword(element[1])) {
+            arrTemp.push(`${element[0]} inválido, deve ter no mínimo 6 caracteres, sem dígitos especiais`);
         }
     });
-
+    
     cb(arrTemp);
 }
 
