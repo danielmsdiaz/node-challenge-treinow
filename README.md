@@ -17,22 +17,24 @@
 Obs: caso for usar o POSTMAN ou Insomnia, não use a versão web.
 
 ### Caso o collections com os endpoins não funcione, copie e cole os endpoints abaixo para testar:
+
+`Obs: caso mande o body em formato json, os id's, os id's devem ser em formato de string!`
 ### Endpoints User -
 `
 {POST/REGISTER USER} - http://localhost:3201/api/register
-{BODY/REGISTER USER} - Formato exemplo: {name: "name", email: "email", document: 123, type: "0", password: password}
+{BODY/REGISTER USER} - Formato exemplo: {"name": "name", "email": "email@teste.com", "document": "12345678988", "type": "0", "password": "123456"}
 
 {POST/LOG USER} - http://localhost:3201/api/auth
-{BODY/LOG USER} - Formato exemplo: {email: "email", password: "password"}
+{BODY/LOG USER} - Formato exemplo: {"email": "email@teste.com", "password": "123456"}
 `
 
 ### Endpoints Personal -
 `
 {POST/REGISTRAR TREINO} - http://localhost:3201/api/personal/workout
-{BODY/REGISTER TREINO} - Formato exemplo: {duration: 90, muscle: "triceps", date: 2023-02-23}
+{BODY/REGISTER TREINO} - Formato exemplo: {"duration": "90", "muscle": "triceps", "date": "2023-02-23"}
 
 {POST/REGISTRAR ALUNO} - http://localhost:3201/api/personal/student
-{BODY/REGISTRAR ALUNO} - Formato exemplo: {id: 2}
+{BODY/REGISTRAR ALUNO} - Formato exemplo: {"id": "2"}
 
 {GET/LISTAR TREINOS} - http://localhost:3201/api/personal/workout
 `
@@ -40,12 +42,12 @@ Obs: caso for usar o POSTMAN ou Insomnia, não use a versão web.
 ### Endpoints Aluno -
 `
 {POST/REGISTRAR TREINO} - http://localhost:3201/api/store/workout
-{BODY/REGISTER TREINO} - Formato exemplo: {date: 2023-02-25, horario: 20:00, treino: 1}
+{BODY/REGISTER TREINO} - Formato exemplo: {"date": "2023-02-25", "horario": "20:00", "treino": 1}
 
 Obs: Um aluno só consegue registrar um treino se ele tiver sido criado pelo seu personal!
 
 {POST/AVALIAR PERSONAL} - http://localhost:3201/api/personal/{{personal_id}}/rating
-{BODY/AVALIAR PERSONAL} - Formato exemplo: {rate: 4}
+{BODY/AVALIAR PERSONAL} - Formato exemplo: {"rate": "4"}
 {HEADER/AVALIAR PERSONAL} - Formato exemplo: {personal_id: 2}
 
 {DELETE/DELETAR CONTA} - http://localhost:3201/api/account/delete

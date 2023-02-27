@@ -6,13 +6,30 @@ import PersonalRepository from "../services/sqlite/personal-respository";
 
 export const registerTraining = (req: Request, res: Response) => {
     const training: Training = { duration: req.body.duration, muscle: req.body.muscle, date: req.body.date, id_personal: res.locals.id };
-    PersonalRepository.criarTreino(training, (id) => {
-        res.status(200).send(`Treino criado: ${id}`);
-    });
+    if(training){
+        if(!training.duration){
+            res.json({ERROR: "Duração inválida"});
+        }
+        else if(!training.muscle){
+            res.json({ERROR: "Agrupamento muscular inválido"});
+        }   
+        else if(!training.date){
+            res.json({ERROR: "Data inválida"});
+        }
+        else if(!training.id_personal){
+            res.json({ERROR: "ID personal inválido"});
+        }   
+        else{
+            PersonalRepository.criarTreino(training, (id) => {
+                res.status(200).send(`Treino criado: ${id}`);
+            });
+        }       
+    }
 }
 
 export const registerAluno = (req: Request, res: Response) => {
     const aluno: Aluno = { user_id: req.body.id, personal_id: res.locals.id };
+    
     checkAlunoPersonal(aluno, (personal) => {
         if (!personal) {
             PersonalRepository.vincularAlunoPersonal(aluno, (update) => {

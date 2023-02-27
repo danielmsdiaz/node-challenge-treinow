@@ -55,24 +55,32 @@ export const logUser = (req: Request, res: Response) => {
     const login: { email: string, password: string } = { email: req.body.email, password: req.body.password };
     try {
         if (login) {
-            UserRepository.logar(login, (id) => {
-                if (id) {
-                    checkUserType(id, (type) => {
-                        if (type) {
-                            const token = JWT.sign(
-                                { id: id, email: login.email, password: login.password, type: type },
-                                process.env.JWT_SECRET_KEY as string,
-                                { expiresIn: "2h" });
+            if (!login.email) {
+                res.json({ERROR: "email inválido!"});
+            }
+            else if (!login.password) {
+                res.json({ERROR: "senha inválida!"});
+            }
+            else {
+                UserRepository.logar(login, (id) => {
+                    if (id) {
+                        checkUserType(id, (type) => {
+                            if (type) {
+                                const token = JWT.sign(
+                                    { id: id, email: login.email, password: login.password, type: type },
+                                    process.env.JWT_SECRET_KEY as string,
+                                    { expiresIn: "2h" });
 
-                            server.locals.token = `Bearer ${token}`;
-                            res.json({ status: "Login realizado com sucesso!", token })
-                        }
-                    });
-                }
-                else {
-                    res.send("Usuário ou senha incorreto!");
-                }
-            })
+                                server.locals.token = `Bearer ${token}`;
+                                res.json({ status: "Login realizado com sucesso!", token })
+                            }
+                        });
+                    }
+                    else {
+                        res.json({ERROR: "Usuário ou senha incorretos!"});
+                    }
+                })
+            }
         }
     } catch (error: any) {
         //res.status(error.response.status)

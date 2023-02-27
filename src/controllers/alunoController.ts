@@ -9,7 +9,7 @@ import { stat } from "fs";
 export const registerMyTraining = (req: Request, res: Response) => {
     const loggedAluno = res.locals.id;
     const training: { date: Date, horario: string, treino: number } = { date: req.body.date, horario: req.body.horario, treino: req.body.treino };
-
+    
     if (loggedAluno && training.date && training.horario && training.treino) {
         AlunoRepository.registerMyTraining(loggedAluno, training, (resp) => {
             if (typeof resp == "string") {
