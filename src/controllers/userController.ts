@@ -6,14 +6,13 @@ import JWT from "jsonwebtoken";
 import dotenv from "dotenv";
 import server from "../server"
 
-
 dotenv.config();
 
 export const pong = (req: Request, res: Response) => {
     res.json({ pong: true });
 }
 
-export const registerUser = (req: Request, res: Response) => {
+export const registerUser = async (req: Request, res: Response) => {
     const obj: User = { name: req.body.name, email: req.body.email, document: req.body.document, type: req.body.type, password: req.body.password };
 
     try {
@@ -56,16 +55,23 @@ export const logUser = (req: Request, res: Response) => {
     try {
         if (login) {
             if (!login.email) {
-                res.json({ERROR: "email inválido!"});
+                res.json({ ERROR: "email inválido!" });
             }
             else if (!login.password) {
-                res.json({ERROR: "senha inválida!"});
+                res.json({ ERROR: "senha inválida!" });
             }
             else {
                 UserRepository.logar(login, (id) => {
                     if (id) {
                         checkUserType(id, (type) => {
-                            if (type) {
+                            if (!type) {
+                                res.json({ ERROR: "Ocorreu um erro!" });
+                                return;
+                            }
+                            if (type == "Inexistente") {
+                                res.json({ ERROR: "Senha incorreta!" });
+                            }
+                            else {
                                 const token = JWT.sign(
                                     { id: id, email: login.email, password: login.password, type: type },
                                     process.env.JWT_SECRET_KEY as string,
@@ -77,7 +83,7 @@ export const logUser = (req: Request, res: Response) => {
                         });
                     }
                     else {
-                        res.json({ERROR: "Usuário ou senha incorretos!"});
+                        res.json({ ERROR: "Email não existe!" });
                     }
                 })
             }

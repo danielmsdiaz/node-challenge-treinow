@@ -2,6 +2,7 @@ import { User } from "../models/User";
 import database from "./sqlite/db";
 import * as EmailValidator from 'email-validator';
 import * as Validator from "../utils/validator";
+import * as crypt from "../utils/crypt";
 
 export const checkIfExists = (user: User, cb: (row?: string) => void) => {
     database.get("SELECT * FROM usuarios WHERE document = ? OR email = ?", [user.document, user.email], (err, row) => {
@@ -18,15 +19,22 @@ export const checkIfExists = (user: User, cb: (row?: string) => void) => {
 }
 
 export const checkLoginCredentials = (user: User, cb: (row?: string) => void) => {
-    database.get("SELECT * FROM usuarios WHERE email = ? AND password = ?", [user.email, user.password], (err, row) => {
+
+    database.get("SELECT * FROM usuarios WHERE email = ?", [user.email], async (err, row) => {
         if (err) {
             console.error(err.message);
         } else if (!row) {
             cb(row);
             console.log('Não existe registro com o valor informado.');
         } else {
-            cb(row.id);
-            console.log('Existe um registro com o valor informado:', row);
+            const result = await crypt.comparePassword(user.password, row.password);
+            if(result){
+                cb(row.id);
+                console.log('Existe um registro com o valor informado:', row);
+            }
+            else{
+                cb("false");
+            }
         }
     });
 }
@@ -76,15 +84,20 @@ export const checkUserFields = (user: User, cb: (row?: string | boolean | string
 }
 
 export const checkUserType = (id: string, cb: (row?: string | boolean) => void) => {
-    database.get("SELECT type FROM usuarios WHERE id = ?", parseInt(id), (err, row) => {
-        if (err) {
-            console.error(err.message);
-        } else if (!row) {
-            console.log('Não existe registro com o valor informado.');
-        } else {
-            cb(row.type);
-        }
-    });
+    if(id === "false"){
+        cb("Inexistente");
+    }
+    else{
+        database.get("SELECT type FROM usuarios WHERE id = ?", parseInt(id), (err, row) => {
+            if (err) {
+                console.error(err.message);
+            } else if (!row) {
+                console.log('Não existe registro com o valor informado.');
+            } else {
+                cb(row.type);
+            }
+        });
+    }
 }
 
 export const closeAccount = (id: string, cb: (row?: any) => void) => {

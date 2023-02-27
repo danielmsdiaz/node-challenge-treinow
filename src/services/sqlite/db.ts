@@ -81,7 +81,6 @@ const mapQueries = new Map<string, string>([
 
 const database = new sqlite3.Database(DBSOURCE, (err) => {
     if (err) {
-        console.log("caiu aqui");
         console.error(err.message);
         throw err
     } else {
@@ -89,7 +88,6 @@ const database = new sqlite3.Database(DBSOURCE, (err) => {
         mapQueries.forEach((element, key) => {
             database.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='${key}'`, (err, row) => {
                 if (err) {
-                    console.log("aqui");
                     console.log(err.message);
                 } else if (row) {
 
@@ -117,7 +115,8 @@ const database = new sqlite3.Database(DBSOURCE, (err) => {
                     console.log(`O trigger ${nomeDoTrigger} existe no banco de dados.`);
                 } else {
                     console.log(`O trigger ${nomeDoTrigger} não existe no banco de dados.`);
-                    database.run(`CREATE TRIGGER inserir_usuario AFTER INSERT ON usuarios
+                    setTimeout(() => {
+                        database.run(`CREATE TRIGGER inserir_usuario AFTER INSERT ON usuarios
                                         BEGIN
                                             INSERT INTO alunos (user_id)
                                             SELECT id FROM usuarios WHERE type = '0' AND id = NEW.id;
@@ -125,6 +124,7 @@ const database = new sqlite3.Database(DBSOURCE, (err) => {
                                             INSERT INTO personais (user_id)
                                             SELECT id FROM usuarios WHERE type = '1' AND id = NEW.id;
                                         END;`);
+                    }, 1000)
                 }
             });
         }
