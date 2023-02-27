@@ -49,7 +49,7 @@ A fim de deixar o projeto mais dinâmico para simular, o token de auth, a cada l
 
 ## Variáveis de Ambiente
 
-O servidor está hospedado na porta 3201, caso queira alterar, vá no arquivo .env, mude o valor de "PORT". O JWT_SECRET_KEY é a key de descriptografia do token, também pode ser alterada.
+O servidor está escutando a porta 3201, caso queira alterar, vá no arquivo .env, mude o valor de "PORT". O JWT_SECRET_KEY é a key de descriptografia do token, também pode ser alterada.
 
 `PORT`
 

@@ -16,6 +16,8 @@ server.use(json());
 
 server.use("/api", userRoutes, personalRoutes, alunoRoutes);
 
-server.listen(process.env.PORT);
+server.listen(process.env.PORT, () => {
+    console.log(`Escutando a porta ${process.env.PORT}`);
+});
 
 export default server
