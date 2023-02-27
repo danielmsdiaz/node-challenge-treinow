@@ -73,7 +73,7 @@ Obs: Esse endpoint de deletar é exclusivo para alunos!
 ### 5- O campo password aceita no mínimo 6 digitos, somente letras ou números.
 
 
-### 6- O para fazer qualquer requisição tirando o Register e o Login do usuário, é preciso fazer o login.
+### 6- Para fazer qualquer requisição tirando o "Register" e o "Login" do usuário, é preciso fazer o login.
 
 
 ### 7- Caso esteja logado com um user do tipo "Aluno" não será possível acessar os endpoints voltados ao tipo "Personal"
