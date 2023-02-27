@@ -1,63 +1,13 @@
-# node-challenge-treinow
 
-### Pré-requisitos globais:
-`npm i -g nodemon typescript ts-node`
-### Após instalar os pré-requisitos
-`npm install`
-### Gerenciador de BDD
-`Pressione CTRL + P, cole esse código => ext install qwtel.sqlite-viewer e pressione ENTER`
-### Comando para rodar o projeto
-`npm run start-dev`
-### PORTA
-`a porta do servidor está no arquivo .env, caso haja conflito, pode mudar lá o PORT, está configurado na 3201`
+# Treinow-node-challenge
 
-### AVISO!
-`As vezes, devido a conexão, pode ocorrer algum erro na geração das tabelas. Se isso acontecer, reinicie o servidor!`
+API REST de aluno-personal, para o processo seletivo da empresa TREINOW.
 
-### Collections com os endpoints
-`https://www.postman.com/security-cosmologist-49346345/workspace/treinow/collection/13848887-08ecf366-8f4a-4480-8255-f5f85429d15f?action=share&creator=13848887`
 
-Obs: caso for usar o POSTMAN ou Insomnia, não use a versão web.
+## INFO
 
-### Caso o collections com os endpoins não funcione, copie e cole os endpoints abaixo para testar:
+A fim de deixar o projeto mais dinâmico para simular, o token de auth, a cada login é salvo no servidor, ou seja, não é necessário mandar no header das requisições
 
-`Obs: caso mande o body em formato json, os id's, os id's devem ser em formato de string!`
-### Endpoints User -
-
-`{POST/REGISTER USER} - http://localhost:3201/api/register
-{BODY/REGISTER USER} - Formato exemplo: {"name": "name", "email": "email@teste.com", "document": "12345678988", "type": "0", "password": "123456"}`
-
-`{POST/LOG USER} - http://localhost:3201/api/auth
-{BODY/LOG USER} - Formato exemplo: {"email": "email@teste.com", "password": "123456"}`
-
-### Endpoints Personal -
-
-`{POST/REGISTRAR TREINO} - http://localhost:3201/api/personal/workout
-{BODY/REGISTER TREINO} - Formato exemplo: {"duration": "90", "muscle": "triceps", "date": "2023-02-23"}`
-
-`{POST/REGISTRAR ALUNO} - http://localhost:3201/api/personal/student
-{BODY/REGISTRAR ALUNO} - Formato exemplo: {"id": "2"}`
-
-`{GET/LISTAR TREINOS} - http://localhost:3201/api/personal/workout`
-
-### Endpoints Aluno -
-
-`{POST/REGISTRAR TREINO} - http://localhost:3201/api/store/workout
-{BODY/REGISTER TREINO} - Formato exemplo: {"date": "2023-02-25", "horario": "20:00", "treino": "1"}`
-
-`Obs: Um aluno só consegue registrar um treino se ele tiver sido criado pelo seu personal!`
-
-`{POST/AVALIAR PERSONAL} - http://localhost:3201/api/personal/{{personal_id}}/rating
-{BODY/AVALIAR PERSONAL} - Formato exemplo: {"rate": "4"}
-{HEADER/AVALIAR PERSONAL} - Formato exemplo: {personal_id: 2}
-
-{DELETE/DELETAR CONTA} - http://localhost:3201/api/account/delete`
-
-`Obs: Esse endpoint de deletar é exclusivo para alunos!`
-
-### OBS:
-
-`
 ### 1- O campo name do cadastro é apenas para o first name. Minimo 3 letras, sem caracteres especiais, nem números.
 
 
@@ -79,11 +29,164 @@ Obs: caso for usar o POSTMAN ou Insomnia, não use a versão web.
 ### 7- Caso esteja logado com um user do tipo "Aluno" não será possível acessar os endpoints voltados ao tipo "Personal"
 
 
-### 8- Algumas requisições necessitam que sejam feitas outras antes. Ex: Para avaliar um personal é necessário que o aluno tenha um personal.
+### 8- Algumas requisições necessitam que sejam feitas outras antes. Ex: Um aluno só pode registrar um treino se ele tiver um personal vinculado; e se o treino que ele quer cadastrar tenha sido criado pelo seu personal.
 
 
 ### 9- O token de autenticação, a fim de deixar mais dinamico, é salvo numa variável global do servidor, quando é feito o login, o usuário já fica autorizado a acessar os outros endpoints.
 
 
 ### 10- A biblioteca "nodemon" restarta o servidor sempre que há alguma mudança nos arquivos .ts, ou .json, ou seja, caso o usuário faça login e mexa no código, o token de autenticação será resetado. Ou seja, terá que realizar o login novamente.
-`
+
+## Funcionalidades
+
+- Registro e Login de Usuários
+- Vinculação de alunos com personais
+- Criação e listagem de treinos pelos personais
+- Uso desses treinos pelos alunos
+- Módulo de avaliação de personais
+- Exclusão da conta
+
+
+## Variáveis de Ambiente
+
+O servidor está hospedado na porta 3201, caso queira alterar, vá no arquivo .env, mude o valor de "PORT". O JWT_SECRET_KEY é a key de descriptografia do token, também pode ser alterada.
+
+`PORT`
+
+`JWT_SECRET_KEY`
+
+
+## Funcionamento
+
+Clone o projeto
+
+```bash
+  git clone https://github.com/danielmsdiaz/node-challenge-treinow.git
+```
+
+Pré-requisitos globais
+
+```bash
+  npm i -g nodemon typescript ts-node
+```
+
+Instale as dependências
+
+```bash
+  npm install
+```
+
+Instale a extensão SQlite Viewer (vsCode windows)
+
+```bash
+  CTRL + P e cole esse código => ext install qwtel.sqlite-viewer
+```
+
+Inicie o servidor
+
+```bash
+  npm run start-dev
+```
+
+
+## Documentação da API
+
+### Requisições tipo "User"
+#### Registra um usuário
+
+```http
+  POST /api/register
+```
+
+| key   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `name` | `string` | **Obrigatório**. Mínimo 3 letras, sem caracteres especiais|
+| `email` | `string` | **Obrigatório**. formato xxxx@xxxx.com. A quantidade de "x" não interfere. |
+| `document` | `string` | **Obrigatório**. (CPF) aceita 11 números. Sem letras, nem caracteres especiais|
+| `type` | `string` | **Obrigatório**. A string "0" é para Aluno, a string "1" é para Personal |
+| `password` | `string` | **Obrigatório**.aceita no mínimo 6 digitos, somente letras ou números. |
+
+
+#### Loga o usuário
+
+```http
+  POST /api/auth
+```
+
+| key   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `name` | `string` | **Obrigatório**. Mínimo 3 letras, sem caracteres especiais|
+| `email` | `string` | **Obrigatório**. formato xxxx@xxxx.com. A quantidade de "x" não 
+
+
+### Requisições tipo "Personal"
+#### Cria um treino
+
+```http
+  POST /api/personal/workout
+```
+
+| key   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `duration` | `string` | **Obrigatório**. Duração em minutos|
+| `muscle` | `string` | **Obrigatório**. Músculo trabalhado
+| `muscle` | `string` | **Obrigatório**. Data da criação. Formato: (AAAA-MM-DD) 
+
+#### Faz o vínculo do personal com algum aluno
+
+```http
+  POST /api/personal/student
+```
+
+| key   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `duration` | `string` | **Obrigatório**. Somente ID's de user cujo "type" é "0", ou seja, Alunos|
+
+#### Lista os treinos do personal
+
+```http
+  GET /api/personal/workout
+```
+
+### Requisições tipo "Aluno"
+#### Registra o início de um treino criado pelo seu Personal
+
+```http
+  POST /api/store/workout
+```
+
+| key   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `date` | `string` | **Obrigatório**. Data do início. Formato: (AAAA-MM-DD) |
+| `horario` | `string` | **Obrigatório**. Horário de início. Formato HH:MM
+| `treino` | `string` | **Obrigatório**. ID de um treino criado pelo seu Personal 
+
+#### Avalia seu personal
+
+```http
+  POST /api/personal/:personal_id/rating
+```
+
+| key   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `rate` | `string` | **Obrigatório**. Nota de 0 a 5|
+
+| HEADER   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `personal_id` | `string` | **Obrigatório**. ID do seu personal|
+
+#### Exclui sua conta
+
+```http
+  DEL /api/account/delete
+```
+
+
+
+
+
+
+## Stack utilizada
+
+**Back-end:** Node, Express, Typescript e SQlite
+
