@@ -33,8 +33,11 @@ const AlunoRepository = {
                         callback("O personal desse aluno não possui nenhum treino cadastrado!");
                     }
                     else {
+                        let tempArr: boolean = false;
+                        
                         res.forEach(treino => {
                             if (treino.id == training.treino) {
+                                tempArr = true;
                                 const sql = 'INSERT INTO horarios_treino (id_aluno, id_treino, horario, date) VALUES (?, ?, ?, ?)';
                                 const params = [aluno, training.treino, training.horario, training.date];
                                 database.run(sql, params, function (_err) {
@@ -42,10 +45,11 @@ const AlunoRepository = {
                                     return;
                                 });
                             }
-                            else {
-                                callback("Esse treino não pertence ao seu personal!");
-                            }
                         });
+
+                        if (!tempArr) {
+                            callback("Esse treino não pertence ao seu personal!");
+                        }
                     }
                 }
             }
