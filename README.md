@@ -58,14 +58,32 @@ Obs: Esse endpoint de deletar é exclusivo para alunos!
 ### OBS:
 
 `
-1- O campo name do cadastro é apenas para o first name. Minimo 3 letras, sem caracteres especiais, nem números.
-2- O campo email possui formato xxxx@xxxx.com. A quantidade de "x" não interfere.
-3- O campo document (CPF) aceita 11 números. Sem letras, nem caracteres especiais
-4- O campo type define se o user será aluno ou personal. A string "0" é para Aluno, a string "1" é para Personal
-5- O campo password aceita no mínimo 6 digitos, somente letras ou números.
-6- O para fazer qualquer requisição tirando o Register e o Login do usuário, é preciso fazer o login.
-7- Caso esteja logado com um user do tipo "Aluno" não será possível acessar os endpoints voltados ao tipo "Personal"
-8- Algumas requisições necessitam que sejam feitas outras antes. Ex: Para avaliar um personal é necessário que o aluno tenha um personal.
-9- O token de autenticação, a fim de deixar mais dinamico, é salvo numa variável global do servidor, quando é feito o login, o usuário já fica autorizado a acessar os outros endpoints.
-10- A biblioteca "nodemon" restarta o servidor sempre que há alguma mudança nos arquivos .ts, ou .json, ou seja, caso o usuário faça login e mexa no código, o token de autenticação será resetado. Ou seja, terá que realizar o login novamente.
+### 1- O campo name do cadastro é apenas para o first name. Minimo 3 letras, sem caracteres especiais, nem números.
+
+
+### 2- O campo email possui formato xxxx@xxxx.com. A quantidade de "x" não interfere.
+
+
+### 3- O campo document (CPF) aceita 11 números. Sem letras, nem caracteres especiais
+
+
+### 4- O campo type define se o user será aluno ou personal. A string "0" é para Aluno, a string "1" é para Personal
+
+
+### 5- O campo password aceita no mínimo 6 digitos, somente letras ou números.
+
+
+### 6- O para fazer qualquer requisição tirando o Register e o Login do usuário, é preciso fazer o login.
+
+
+### 7- Caso esteja logado com um user do tipo "Aluno" não será possível acessar os endpoints voltados ao tipo "Personal"
+
+
+### 8- Algumas requisições necessitam que sejam feitas outras antes. Ex: Para avaliar um personal é necessário que o aluno tenha um personal.
+
+
+### 9- O token de autenticação, a fim de deixar mais dinamico, é salvo numa variável global do servidor, quando é feito o login, o usuário já fica autorizado a acessar os outros endpoints.
+
+
+### 10- A biblioteca "nodemon" restarta o servidor sempre que há alguma mudança nos arquivos .ts, ou .json, ou seja, caso o usuário faça login e mexa no código, o token de autenticação será resetado. Ou seja, terá que realizar o login novamente.
 `
