@@ -20,6 +20,10 @@ export const registerMyTraining = (req: Request, res: Response) => {
             }
         });
     }
+    else{
+        res.status(400).json({ERROR: "Ocorreu um erro. Verifique as keys!"});
+        
+    }
 }
 
 export const deleteAccount = (req: Request, res: Response) => {
